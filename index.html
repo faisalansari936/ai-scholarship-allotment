@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Scholarship Optimization & Audit Panel</title>
+    <!-- Tailwind CSS for modern enterprise UI styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for high-res vector data rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen font-sans">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-blue-900 text-white shadow-md py-5 px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold tracking-wider uppercase">Scholarship Allocation Framework</h1>
+                <p class="text-xs text-blue-200 mt-1">Automated Resource Maximization Matrix • 10,000 Active Profiles</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <label class="text-sm font-semibold text-blue-100">Set Allocatable Budget:</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-2 text-gray-400 font-bold text-sm">₹</span>
+                    <input id="budgetInput" type="number" value="60000000" class="bg-white text-gray-900 rounded-lg pl-7 pr-3 py-1.5 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 w-44">
+                </div>
+                <button onclick="runOptimizationPipeline()" class="bg-emerald-500 hover:bg-emerald-600 px-4 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all shadow-md">
+                    Optimize Engine
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-8">
+
+        <!-- 1. LIVE ID SEARCH BOX PANEL -->
+        <section class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+            <h2 class="text-lg font-bold text-blue-900 uppercase tracking-wide border-b border-gray-100 pb-3 mb-4 flex items-center gap-2">
+                🔍 Student Verification & Query Portal
+            </h2>
+            <div class="flex flex-col sm:flex-row gap-3 max-w-2xl">
+                <input id="searchInput" type="number" placeholder="Enter 7-Digit Student ID (e.g., 2026001)" class="border border-gray-300 rounded-lg px-4 py-2.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <button onclick="searchStudentProfile()" class="bg-blue-800 hover:bg-blue-900 text-white font-bold text-sm px-6 py-2.5 rounded-lg transition-all shadow-sm shrink-0">
+                    Verify Status
+                </button>
+            </div>
+            
+            <!-- Target Query Results Box Layout -->
+            <div id="searchResult" class="hidden mt-5 rounded-xl border p-5 transition-all">
+                <!-- Javascript will inject student results directly inside here -->
+            </div>
+        </section>
+
+        <!-- 2. HIGH-LEVEL KPI METRIC BOARD -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-t-4 border-blue-900">
+                <p class="text-xs font-bold uppercase text-gray-500 tracking-wider">Total Fund Budget</p>
+                <p id="kpiBudget" class="text-2xl font-bold text-gray-900 mt-2">₹0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-t-4 border-emerald-500">
+                <p class="text-xs font-bold uppercase text-gray-500 tracking-wider">Disbursed Capital</p>
+                <p id="kpiSpent" class="text-2xl font-bold text-emerald-600 mt-2">₹0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-t-4 border-red-500">
+                <p class="text-xs font-bold uppercase text-gray-500 tracking-wider">Leftover Reservoir</p>
+                <p id="kpiLeftover" class="text-2xl font-bold text-red-600 mt-2">₹0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm border-t-4 border-amber-500">
+                <p class="text-xs font-bold uppercase text-gray-500 tracking-wider">Deferred (No Funds Available)</p>
+                <p id="kpiDeferred" class="text-2xl font-bold text-amber-600 mt-2 font-mono">0 Profiles</p>
+            </div>
+        </section>
+
+        <!-- 3. INTERACTIVE DATA GRAPH GRID -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-blue-900 border-b pb-2 mb-4">Allotments Across Academic Mark Brackets</h3>
+                <div class="h-64 flex items-center justify-center">
+                    <canvas id="marksChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-blue-900 border-b pb-2 mb-4">Allotments Across Economic Need Brackets</h3>
+                <div class="h-64 flex items-center justify-center">
+                    <canvas id="incomeChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TOTAL SYSTEM PIPELINE RECAP -->
+        <section class="bg-slate-900 text-slate-100 p-6 rounded-xl shadow-inner">
+            <h3 class="text-md font-bold tracking-wide uppercase border-b border-slate-700 pb-2 mb-4 text-emerald-400">Pipeline Execution Overview</h3>
+            <ul class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm font-mono">
+                <li>• Scanned Database Inputs: <span id="logTotal" class="text-white font-bold">0</span></li>
+                <li>• Early Filter Rejections: <span id="logRejected" class="text-red-400 font-bold">0</span></li>
+                <li>• Approved Distributions: <span id="logApproved" class="text-emerald-400 font-bold">0</span></li>
+            </ul>
+        </section>
+
+        <!-- 5. COMPLETE VERIFICATION REGISTRY LEDGER TABLE -->
+        <section class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-blue-900">Global Registry Ledger (All Active Entries)</h3>
+                <span class="text-xs bg-blue-100 text-blue-800 font-bold px-2.5 py-1 rounded-full font-mono">10,000 Records Managed</span>
+            </div>
+            <div class="overflow-y-auto max-h-[550px]">
+                <table class="w-full text-left text-sm border-collapse">
+                    <thead class="bg-blue-900 text-white sticky top-0 text-xs uppercase tracking-wide">
+                        <tr>
+                            <th class="p-3.5">ID Ref</th>
+                            <th class="p-3.5">Applicant Profile Name</th>
+                            <th class="p-3.5">Marks (%)</th>
+                            <th class="p-3.5">Annual Income</th>
+                            <th class="p-3.5">Deserving Score</th>
+                            <th class="p-3.5">Allotment Status</th>
+                            <th class="p-3.5">System Audit Reason/Log</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerTableBody" class="divide-y divide-gray-200">
+                        <!-- 10,000 full records rendering node target -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- SYSTEM CORE JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        const FIXED_SCHOLARSHIP = 60000;
+        const TARGET_POOL_SIZE = 10000;
+        const STARTING_ID = 2026001;
+
+        // Global dataset arrays
+        let masterRegistry = [];
+        let marksChartInstance = null;
+        let incomeChartInstance = null;
+
+        // Executed instantly on load
+        window.addEventListener('DOMContentLoaded', () => {
+            generateDataset();
+            runOptimizationPipeline();
+        });
+
+        // 1. PSEUDO-RANDOM DATASET GENERATOR
+        function generateDataset() {
+            masterRegistry = [];
+            for (let i = 0; i < TARGET_POOL_SIZE; i++) {
+                let id = STARTING_ID + i;
+                let name = `Profile_${id}`;
+                
+                // Mimic original distribution limits
+                let percentage = parseFloat((45.0 + Math.random() * 55).toFixed(1));
+                let family_income = Math.floor(40000 + Math.random() * 410000);
+                
+                let student = {
+                    id: id,
+                    name: name,
+                    percentage: percentage,
+                    family_income: family_income,
+                    deserving_score: 0,
+                    status: 'REJECTED',
+                    details: ''
+                };
+
+                // Run baseline filters matching original logic
+                if (percentage > 60.0 && family_income < 250000) {
+                    let academicComponent = percentage * 2.0;
+                    let financialNeedComponent = (250000 - family_income) / 2500;
+                    student.deserving_score = parseFloat((academicComponent + financialNeedComponent).toFixed(2));
+                    student.status = 'DEFERRED'; // Default state before applying budget limitations
+                    student.details = 'Passed parameters; pending priority queue budget assessment.';
+                } else {
+                    if (percentage <= 60.0 && family_income >= 250000) {
+                        student.details = 'Rejected: Score below minimum 60% and family income exceeds maximum limit of ₹2,50,000.';
+                    } else if (percentage <= 60.0) {
+                        student.details = 'Rejected: Academic marks scored fall below the baseline eligibility floor of 60%.';
+                    } else {
+                        student.details = 'Rejected: Total documented family income exceeds the economic cap of ₹2,50,000.';
+                    }
+                }
+                masterRegistry.push(student);
+            }
+        }
+
+        // 2. GREEDY PRIORITY QUEUE OPTIMIZATION ENGINE
+        function runOptimizationPipeline() {
+            const totalBudget = parseInt(document.getElementById('budgetInput').value) || 0;
+            
+            // Clean dynamic allocation statuses across runtime resets
+            masterRegistry.forEach(s => {
+                if(s.status !== 'REJECTED') {
+                    s.status = 'DEFERRED';
+                    s.details = 'Passed parameters; pending priority queue budget assessment.';
+                }
+            });
+
+            // Isolate items that cleared the greedy filter
+            let eligiblePool = masterRegistry.filter(s => s.status === 'DEFERRED');
+
+            // Sort by priority rank score descending (equivalent to running an extractMax heap sort)
+            eligiblePool.sort((a, b) => b.deserving_score - a.deserving_score);
+
+            let fundsSpent = 0;
+            let awardedCount = 0;
+            let deferredCount = 0;
+            let rejectedCount = TARGET_POOL_SIZE - eligiblePool.length;
+
+            // Greedy knapsack distribution loop
+            eligiblePool.forEach(student => {
+                if (fundsSpent + FIXED_SCHOLARSHIP <= totalBudget) {
+                    student.status = 'APPROVED';
+                    student.details = 'Scholarship allocation verified and approved for disbursement.';
+                    fundsSpent += FIXED_SCHOLARSHIP;
+                    awardedCount++;
+                } else {
+                    student.status = 'DEFERRED';
+                    student.details = 'Eligible for scholarship, but funding dried up due to lower priority placement.';
+                    deferredCount++;
+                }
+            });
+
+            // Update DOM metrics display
+            document.getElementById('kpiBudget').innerText = `₹${totalBudget.toLocaleString('en-IN')}`;
+            document.getElementById('kpiSpent').innerText = `₹${fundsSpent.toLocaleString('en-IN')}`;
+            document.getElementById('kpiLeftover').innerText = `₹${(totalBudget - fundsSpent).toLocaleString('en-IN')}`;
+            document.getElementById('kpiDeferred').innerText = `${deferredCount} Profiles`;
+
+            document.getElementById('logTotal').innerText = TARGET_POOL_SIZE.toLocaleString();
+            document.getElementById('logRejected').innerText = rejectedCount.toLocaleString();
+            document.getElementById('logApproved').innerText = awardedCount.toLocaleString();
+
+            // Run visualizations & update the registry
+            updateDistributionCharts(masterRegistry.filter(s => s.status === 'APPROVED'));
+            renderLedgerTable();
+        }
+
+        // 3. TABLE LEDGER VIEW CONSTRUCTOR
+        function renderLedgerTable() {
+            const tbody = document.getElementById('ledgerTableBody');
+            let htmlHTML = '';
+
+            masterRegistry.forEach(s => {
+                let statusBadge = '';
+                let textClass = '';
+
+                if (s.status === 'APPROVED') {
+                    statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">APPROVED</span>`;
+                    textClass = 'text-emerald-700 font-semibold';
+                } else if (s.status === 'DEFERRED') {
+                    statusBadge = `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded">DEFERRED</span>`;
+                    textClass = 'text-amber-700';
+                } else {
+                    statusBadge = `<span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">REJECTED</span>`;
+                    textClass = 'text-red-700';
+                }
+
+                htmlHTML += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="p-3 font-mono text-xs text-gray-600">${s.id}</td>
+                        <td class="p-3 font-medium text-gray-900">${s.name}</td>
+                        <td class="p-3 font-mono">${s.percentage}%</td>
+                        <td class="p-3 font-mono">₹${s.family_income.toLocaleString('en-IN')}</td>
+                        <td class="p-3 font-mono text-center">${s.deserving_score || '-'}</td>
+                        <td class="p-3">${statusBadge}</td>
+                        <td class="p-3 text-xs ${textClass}">${s.details}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = htmlHTML;
+        }
+
+        // 4. CHART.JS VISUALIZATION CONTROLLER
+        function updateDistributionCharts(approvedRecipients) {
+            let highMarks = 0, medMarks = 0, lowMarks = 0;
+            let lowIncome = 0, midIncome = 0, upperIncome = 0;
+
+            approvedRecipients.forEach(s => {
+                if (s.percentage >= 90) highMarks++;
+                else if (s.percentage >= 75) medMarks++;
+                else lowMarks++;
+
+                if (s.family_income < 100000) lowIncome++;
+                else if (s.family_income < 180000) midIncome++;
+                else upperIncome++;
+            });
+
+            // Marks distribution bar graph configurations
+            if (marksChartInstance) marksChartInstance.destroy();
+            const ctxMarks = document.getElementById('marksChart').getContext('2d');
+            marksChartInstance = new Chart(ctxMarks, {
+                type: 'bar',
+                data: {
+                    labels: ['Highest Marks (90-100%)', 'Medium Marks (75-89%)', 'Lowest Marks (61-74%)'],
+                    datasets: [{
+                        label: 'Approved Students',
+                        data: [highMarks, medMarks, lowMarks],
+                        backgroundColor: ['#0f172a', '#2563eb', '#60a5fa'],
+                        borderRadius: 6
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Income distribution pie chart configurations
+            if (incomeChartInstance) incomeChartInstance.destroy();
+            const ctxIncome = document.getElementById('incomeChart').getContext('2d');
+            incomeChartInstance = new Chart(ctxIncome, {
+                type: 'pie',
+                data: {
+                    labels: ['Lowest Income (<1L)', 'Mid Income (1L-1.8L)', 'Upper Eligible (1.8L-2.5L)'],
+                    datasets: [{
+                        data: [lowIncome, midIncome, upperIncome],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        // 5. LIVE SEARCH QUERY METHOD
+        function searchStudentProfile() {
+            const searchId = parseInt(document.getElementById('searchInput').value);
+            const displayPanel = document.getElementById('searchResult');
+
+            if (!searchId) {
+                alert("Please enter a valid numeric Student ID.");
+                return;
+            }
+
+            // Perform direct index offset calculation
+            const targetIndex = searchId - STARTING_ID;
+
+            if (targetIndex < 0 || targetIndex >= TARGET_POOL_SIZE) {
+                displayPanel.classList.remove('hidden');
+                displayPanel.className = "mt-5 rounded-xl border border-red-200 bg-red-50 p-5";
+                displayPanel.innerHTML = `
+                    <p class="text-sm font-bold text-red-800">❌ Unknown Search Query Reference ID</p>
+                    <p class="text-xs text-red-600 mt-1">The requested Student ID falls outside valid registry ranges (${STARTING_ID} - ${STARTING_ID + TARGET_POOL_SIZE - 1}).</p>
+                `;
+                return;
+            }
+
+            const match = masterRegistry[targetIndex];
+            displayPanel.classList.remove('hidden');
+
+            let cardStyles = "";
+            let statusText = "";
+
+            if (match.status === 'APPROVED') {
+                cardStyles = "border-emerald-200 bg-emerald-50 text-emerald-900";
+                statusText = `🎉 APPROVED • Scholarship allocation confirmed. Allocation amount: <strong>₹${FIXED_SCHOLARSHIP.toLocaleString('en-IN')}</strong>`;
+            } else if (match.status === 'DEFERRED') {
+                cardStyles = "border-amber-200 bg-amber-50 text-amber-900";
+                statusText = `⚠️ DEFERRED • application was placed on hold.`;
+            } else {
+                cardStyles = "border-red-200 bg-red-50 text-red-900";
+                statusText = `❌ APPLICATION REJECTED`;
+            }
+
+            displayPanel.className = `mt-5 rounded-xl border p-5 ${cardStyles}`;
+            displayPanel.innerHTML = `
+                <div class="flex justify-between items-start border-b border-black/5 pb-3 mb-3">
+                    <div>
+                        <h4 class="text-base font-bold font-mono tracking-tight">${match.name} (ID: ${match.id})</h4>
+                        <p class="text-xs mt-0.5 opacity-80">Metrics: Academics at <strong>${match.percentage}%</strong> | Annual Income at <strong>₹${match.family_income.toLocaleString('en-IN')}</strong></p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs uppercase font-mono opacity-60">System Merit Score</span>
+                        <p class="text-lg font-bold font-mono">${match.deserving_score || '0.00'}</p>
+                    </div>
+                </div>
+                <p class="text-sm font-semibold tracking-wide">${statusText}</p>
+                <p class="text-xs mt-1.5 opacity-80 italic"><strong>Audit Reason:</strong> ${match.details}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
